@@ -19,8 +19,8 @@ module.exports = function(config) {
             'bower_components/vissense-monitor/dist/vissense-monitor.min.js',
             'bower_components/vissense-timer/dist/vissense-timer.min.js',
 
-            'src/main/plugins/percentage_time_test/vissense.plugins.percentage_time_test.js',
-            'src/main/plugins/percentage_time_test/vissense.plugins.50_1_test.js',
+            'src/main/plugin/percentage_time_test/vissense.plugin.percentage_time_test.js',
+            'src/main/plugin/percentage_time_test/vissense.plugin.50_1_test.js',
 
             'spec/**/*.js',
             // fixtures

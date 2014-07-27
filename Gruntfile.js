@@ -23,10 +23,10 @@ module.exports = function (grunt) {
             },
             dist: {
                 src: [
-                    'src/main/plugins/percentage_time_test/vissense.plugins.percentage_time_test.js',
-                    'src/main/plugins/percentage_time_test/vissense.plugins.50_1_test.js'
+                    'src/main/plugin/percentage_time_test/vissense.plugin.percentage_time_test.js',
+                    'src/main/plugin/percentage_time_test/vissense.plugin.50_1_test.js'
                 ],
-                dest: 'dist/vissense.plugins.percentage-time-test.js'
+                dest: 'dist/vissense.plugin.percentage-time-test.js'
             }
         },
         uglify: {
@@ -35,7 +35,7 @@ module.exports = function (grunt) {
             },
             dist: {
                 src: '<%= concat.dist.dest %>',
-                dest: 'dist/vissense.plugins.percentage-time-test.min.js'
+                dest: 'dist/vissense.plugin.percentage-time-test.min.js'
             }
         },
         jshint: {
@@ -61,7 +61,8 @@ module.exports = function (grunt) {
         jasmine: {
             coverage: {
                 src: [
-                    'dist/vissense.plugins.percentage-time-test.min.js'
+                    'src/main/plugin/percentage_time_test/vissense.plugin.percentage_time_test.js',
+                    'src/main/plugin/percentage_time_test/vissense.plugin.50_1_test.js'
                 ],
                 options: {
                     display: 'full',
