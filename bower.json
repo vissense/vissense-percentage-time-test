@@ -1,0 +1,37 @@
+{
+  "name": "vissense-plugin-percentage-time-test",
+  "version": "0.1.0",
+  "homepage": "http://example.com",
+  "authors": [
+    "tbk"
+  ],
+  "moduleType": [
+    "globals"
+  ],
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "bin",
+    "spec",
+    "bower_components",
+    "node_modules",
+    "Gruntfile.js",
+    "SpecRunner.html",
+    "package.json",
+    "bower.json",
+    "src/test",
+    "**/.*"
+  ],
+  "devDependencies": {
+    "qunit": "1.14.0",
+    "jasmine": "2.0.0",
+    "lodash": "2.4.1",
+    "jquery": "2.1.1",
+    "jasmine-jquery": "velesin/jasmine-jquery#2.0.5"
+  },
+  "dependencies": {
+    "vissense": "git@bitbucket.org:borakompanioni/vissense.git#0.1.0-rc1",
+    "vissense-monitor": "git@bitbucket.org:borakompanioni/vissense-monitor.git#0.1.0",
+    "vissense-timer": "git@bitbucket.org:borakompanioni/vissense-timer.git#0.1.0"
+  }
+}
