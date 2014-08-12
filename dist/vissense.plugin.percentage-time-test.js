@@ -19,15 +19,16 @@
     */
     VisSense.fn.onPercentageTimeTestPassed = function(percentageLimit, timeLimit, callback) {
         var me = this;
-        var timer = me.timer();
+        var timer = me.timer({
+            strategy: new VisSense.VisMon.Strategy.PollingStrategy({
+                interval: 100
+            })
+        });
 
         var timeElapsed = 0;
         var timeStarted = null;
 
-        // TODO: make the checkInterval configurable (?)
-        var checkInterval = timeLimit > 100 ? 100 : timeLimit;
-
-        var timerId = timer.every(checkInterval, checkInterval, function(monitor) {
+        var timerId = timer.every(100, 100, function(monitor) {
             if(monitor.percentage() < percentageLimit) {
                 timeStarted = null;
             } else {
@@ -36,7 +37,6 @@
 
                 if(timeElapsed >= timeLimit) {
                     callback();
-
                     // stop timer after test has passed
                     VisSenseUtils.defer(function() {
                         timer.stop(timerId);

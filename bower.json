@@ -30,8 +30,8 @@
     "jasmine-jquery": "velesin/jasmine-jquery#2.0.5"
   },
   "dependencies": {
-    "vissense": "git@bitbucket.org:borakompanioni/vissense.git#0.1.0-rc1",
-    "vissense-monitor": "git@bitbucket.org:borakompanioni/vissense-monitor.git#0.1.0",
-    "vissense-timer": "git@bitbucket.org:borakompanioni/vissense-timer.git#0.1.0"
+    "vissense": "git@bitbucket.org:borakompanioni/vissense.git#master",
+    "vissense-monitor": "git@bitbucket.org:borakompanioni/vissense-monitor.git#master",
+    "vissense-timer": "git@bitbucket.org:borakompanioni/vissense-timer.git#master"
   }
 }
