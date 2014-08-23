@@ -28,7 +28,8 @@
         var timeStarted = null;
 
         timer.every(100, 100, function(monitor) {
-            if(monitor.percentage() < percentageLimit) {
+            var percentage = monitor.status().percentage();
+            if(percentage < percentageLimit) {
                 timeStarted = null;
             } else {
                 timeStarted = timeStarted || Date.now();

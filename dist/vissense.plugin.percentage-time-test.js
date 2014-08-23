@@ -28,8 +28,9 @@
         var timeElapsed = 0;
         var timeStarted = null;
 
-        var timerId = timer.every(100, 100, function(monitor) {
-            if(monitor.percentage() < percentageLimit) {
+        timer.every(100, 100, function(monitor) {
+            var percentage = monitor.status().percentage();
+            if(percentage < percentageLimit) {
                 timeStarted = null;
             } else {
                 timeStarted = timeStarted || Date.now();
@@ -39,7 +40,7 @@
                     callback();
                     // stop timer after test has passed
                     VisSenseUtils.defer(function() {
-                        timer.stop(timerId);
+                        timer.destroy();
                     });
                 }
             }
