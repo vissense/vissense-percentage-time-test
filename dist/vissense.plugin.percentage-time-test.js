@@ -20,9 +20,7 @@
     VisSense.fn.onPercentageTimeTestPassed = function(percentageLimit, timeLimit, callback) {
         var me = this;
         var timer = me.timer({
-            strategy: new VisSense.VisMon.Strategy.PollingStrategy({
-                interval: 100
-            })
+            strategy: new VisSense.VisMon.Strategy.NoopStrategy()
         });
 
         var timeElapsed = 0;
@@ -33,8 +31,9 @@
             if(percentage < percentageLimit) {
                 timeStarted = null;
             } else {
-                timeStarted = timeStarted || Date.now();
-                timeElapsed = VisSenseUtils.now() - timeStarted;
+                var now = VisSenseUtils.now();
+                timeStarted = timeStarted || now;
+                timeElapsed = now - timeStarted;
 
                 if(timeElapsed >= timeLimit) {
                     callback();
@@ -44,6 +43,8 @@
                     });
                 }
             }
+
+            monitor.update();
         }, true);
     };
 
