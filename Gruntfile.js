@@ -77,8 +77,8 @@ module.exports = function (grunt) {
                         'bower_components/jasmine-jquery/lib/jasmine-jquery.js',
                         'bower_components/againjs/dist/againjs.min.js',
                         'bower_components/vissense/dist/vissense.min.js',
-                        'bower_components/vissense-monitor/dist/vissense-monitor.min.js',
-                        'bower_components/vissense-timer/dist/vissense-timer.min.js'
+                        'bower_components/vissense-monitor/dist/vissense.monitor.min.js',
+                        'bower_components/vissense-timer/dist/vissense.timer.min.js'
                     ],
                     template: require('grunt-template-jasmine-istanbul'),
                     templateOptions: {
@@ -87,11 +87,6 @@ module.exports = function (grunt) {
                                 type: 'html',
                                 options: {
                                     dir: '<%= dirs.coverage %>/html'
-                                }
-                            }, {
-                                type: 'cobertura',
-                                options: {
-                                    dir: '<%= dirs.coverage %>/cobertura'
                                 }
                             }, {
                                 type: 'lcov',

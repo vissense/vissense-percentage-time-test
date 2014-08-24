@@ -32,7 +32,7 @@
     var vis1 = new VisSense(element1);
 
     asyncTest( "test if 50/1 rule passed", function() {
-        expect(3);
+        expect(2);
         var invocations = 0;
 
         vis1.on50_1TestPassed(function() {
@@ -45,13 +45,9 @@
 
         setTimeout(function () {
             ok( 1 === invocations, "50/1 rule has been passed");
+            start(); // <- last timeout must call ´start´
         }, 1000 + 2 /*give it 2 extra milliseconds*/);
 
-        setTimeout(function () {
-            ok( 1 === invocations, "50/1 rule has been passed and callback has been invoked only once");
-
-            start(); // <- last timeout must call ´start´
-        }, 3500);
     });
   </script>
 
