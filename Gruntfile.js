@@ -52,11 +52,6 @@ module.exports = function (grunt) {
                 src: ['src/**/*.js', 'spec/**/*.js']
             }
         },
-        qunit: {
-            files: [
-                'src/test/**/*.html'
-            ]
-        },
 
         jasmine: {
             coverage: {
@@ -77,7 +72,6 @@ module.exports = function (grunt) {
                         'bower_components/jasmine-jquery/lib/jasmine-jquery.js',
                         'bower_components/againjs/dist/againjs.min.js',
                         'bower_components/vissense/dist/vissense.min.js',
-                        'bower_components/vissense-monitor/dist/vissense.monitor.min.js',
                         'bower_components/vissense-timer/dist/vissense.timer.min.js'
                     ],
                     template: require('grunt-template-jasmine-istanbul'),
@@ -163,7 +157,6 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-contrib-connect');
     grunt.loadNpmTasks('grunt-contrib-jasmine');
-    grunt.loadNpmTasks('grunt-contrib-qunit');
     grunt.loadNpmTasks('grunt-karma');
 
     grunt.loadNpmTasks('grunt-notify');
@@ -171,6 +164,6 @@ module.exports = function (grunt) {
     grunt.registerTask('default', ['jshint', 'concat', 'uglify', 'test', 'notify:js']);
 
     grunt.registerTask('serve', ['default', 'watch']);
-    grunt.registerTask('test', ['connect', 'jasmine', 'karma', 'qunit','notify:test']);
+    grunt.registerTask('test', ['connect', 'jasmine', 'karma', 'notify:test']);
 };
 

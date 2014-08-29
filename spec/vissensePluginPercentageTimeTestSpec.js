@@ -15,8 +15,12 @@ describe('VisSensePluginPercentageTimeTest', function(undefined) {
            var visobj = new VisSense($('#element')[0]);
            var invocations = 0;
 
+           var now = Date.now();
+           var duration = null;
+
            visobj.on50_1TestPassed(function() {
                invocations = 1;
+               duration = Date.now() - now;
            });
 
            setTimeout(function() {
@@ -25,10 +29,10 @@ describe('VisSensePluginPercentageTimeTest', function(undefined) {
 
            setTimeout(function() {
                expect(invocations).toBe(1);
-           }, 1001 + 50);
 
-           setTimeout(function() {
-               expect(invocations).toBe(1);
+               expect(duration).toBeGreaterThan(999);
+               expect(duration).toBeLessThan(1100);
+
                done();
            }, 3501);
        });
@@ -46,7 +50,7 @@ describe('VisSensePluginPercentageTimeTest', function(undefined) {
            setTimeout(function() {
                expect(invocations).toBe(0);
                done();
-           }, 1100);
+           }, 1200);
        });
 
    });
