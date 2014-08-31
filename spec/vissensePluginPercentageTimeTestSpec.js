@@ -31,7 +31,7 @@ describe('VisSensePluginPercentageTimeTest', function(undefined) {
                expect(invocations).toBe(1);
 
                expect(duration).toBeGreaterThan(999);
-               expect(duration).toBeLessThan(1100);
+               expect(duration).toBeLessThan(1099);
 
                done();
            }, 3501);
