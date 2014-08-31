@@ -23,8 +23,7 @@ module.exports = function (grunt) {
             },
             dist: {
                 src: [
-                    'src/main/plugin/percentage_time_test/vissense.plugin.percentage_time_test.js',
-                    'src/main/plugin/percentage_time_test/vissense.plugin.50_1_test.js'
+                    'src/main/plugin/percentage_time_test/vissense.plugin.percentage_time_test.js'
                 ],
                 dest: 'dist/vissense.plugin.percentage-time-test.js'
             }
@@ -56,8 +55,7 @@ module.exports = function (grunt) {
         jasmine: {
             coverage: {
                 src: [
-                    'src/main/plugin/percentage_time_test/vissense.plugin.percentage_time_test.js',
-                    'src/main/plugin/percentage_time_test/vissense.plugin.50_1_test.js'
+                    'src/main/plugin/percentage_time_test/vissense.plugin.percentage_time_test.js'
                 ],
                 options: {
                     display: 'full',
@@ -70,9 +68,7 @@ module.exports = function (grunt) {
                         'bower_components/jquery/dist/jquery.min.js',
                         'bower_components/lodash/dist/lodash.min.js',
                         'bower_components/jasmine-jquery/lib/jasmine-jquery.js',
-                        'bower_components/againjs/dist/againjs.min.js',
-                        'bower_components/vissense/dist/vissense.min.js',
-                        'bower_components/vissense-timer/dist/vissense.timer.min.js'
+                        'bower_components/vissense/dist/vissense.min.js'
                     ],
                     template: require('grunt-template-jasmine-istanbul'),
                     templateOptions: {

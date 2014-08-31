@@ -1,4 +1,4 @@
-/*! { "name": "vissense-plugin-percentage-time-test", "version": "0.1.1", "copyright": "(c) 2014 tbk" } */
+/*! { "name": "vissense-plugin-percentage-time-test", "version": "0.1.2", "copyright": "(c) 2014 tbk" } */
 
  ;(function(window, VisSense, VisSenseUtils) {
     'use strict';
@@ -50,11 +50,6 @@
         monitor.start();
     };
 
-}(window, window.VisSense, window.VisSenseUtils));
-
- ;(function(window, VisSense) {
-    'use strict';
-
     /**
     * This function invokes a callback if and only if
     * the element has been visible at least 50 percent
@@ -63,5 +58,5 @@
     VisSense.fn.on50_1TestPassed = function(callback) {
         this.onPercentageTimeTestPassed(0.5, 1000, callback);
     };
-
-}(window, window.VisSense));
+    
+}(window, window.VisSense, window.VisSenseUtils));
