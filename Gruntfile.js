@@ -10,31 +10,54 @@ module.exports = function (grunt) {
             '"version": "<%= pkg.version %>", ' +
             '<%= pkg.homepage ? "\\"homepage\\": \\"" + pkg.homepage + "\\"," : "" %>' +
             '"copyright": "(c) <%= grunt.template.today("yyyy") %> <%= pkg.author.name %>" ' +
-        '} */\n',
+        '} */',
 
         dirs :{
-            coverage: './bin/coverage'
+            tmp: './tmp',
+            dist: './dist',
+            coverage: '<%= dirs.dist %>/coverage'
+        },
+        clean: {
+          tmp: {
+            src: ['<%= dirs.tmp %>']
+          },
+          dist: {
+            src: ['<%= dirs.dist %>']
+          }
         },
 
         concat: {
-            options: {
-                banner: '<%= banner %>',
-                stripBanners: true
-            },
-            dist: {
+            tmp: {
+                options: {
+                    banner: '\n;(function(window, VisSense, VisSenseUtils) {\n\'use strict\';\n',
+                    footer: '\n})(window, window.VisSense, window.VisSenseUtils);',
+                    stripBanners: true
+                },
                 src: [
                     'src/main/plugin/percentage_time_test/vissense.plugin.percentage_time_test.js'
                 ],
-                dest: 'dist/vissense.plugin.percentage-time-test.js'
+                dest: '<%= dirs.tmp %>/vissense.plugin.percentage-time-test.js'
+            },
+            dist: {
+                options: {
+                  banner: '<%= banner %>',
+                  stripBanners: true
+                },
+                src: '<%= concat.tmp.dest %>',
+                dest: '<%= dirs.dist %>/vissense.plugin.percentage-time-test.js'
             }
         },
         uglify: {
             options: {
-                banner: '<%= banner %>'
+                banner: '<%= banner %>',
+                report: 'gzip',
+                drop_console: true,
+                sourceMap: true,
+                sourceMapName: '<%= uglify.dist.dest %>.map'
             },
             dist: {
                 src: '<%= concat.dist.dest %>',
-                dest: 'dist/vissense.plugin.percentage-time-test.min.js'
+                dest: '<%= dirs.dist %>/vissense.plugin.percentage-time-test.min.js'
             }
         },
         jshint: {
@@ -48,14 +71,14 @@ module.exports = function (grunt) {
                 src: 'karma.conf.js'
             },
             src_test: {
-                src: ['src/**/*.js', 'spec/**/*.js']
+                src: ['tmp/**/*.js', 'spec/**/*.js']
             }
         },
 
         jasmine: {
             coverage: {
                 src: [
-                    'src/main/plugin/percentage_time_test/vissense.plugin.percentage_time_test.js'
+                    '<%= concat.dist.dest %>'
                 ],
                 options: {
                     display: 'full',
@@ -153,11 +176,13 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-contrib-connect');
     grunt.loadNpmTasks('grunt-contrib-jasmine');
+    grunt.loadNpmTasks('grunt-contrib-clean');
     grunt.loadNpmTasks('grunt-karma');
 
     grunt.loadNpmTasks('grunt-notify');
 
-    grunt.registerTask('default', ['jshint', 'concat', 'uglify', 'test', 'notify:js']);
+    grunt.registerTask('dist', ['clean:tmp', 'concat:tmp', 'jshint', 'clean:dist', 'concat:dist', 'uglify', 'clean:tmp']);
+    grunt.registerTask('default', ['dist', 'test', 'notify:js']);
 
     grunt.registerTask('serve', ['default', 'watch']);
     grunt.registerTask('test', ['connect', 'jasmine', 'karma', 'notify:test']);
