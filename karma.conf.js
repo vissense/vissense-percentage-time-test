@@ -13,12 +13,9 @@ module.exports = function(config) {
             'bower_components/lodash/dist/lodash.min.js',
             'bower_components/jasmine-jquery/lib/jasmine-jquery.js',
 
-            'bower_components/againjs/dist/againjs.min.js',
-
             'bower_components/vissense/dist/vissense.min.js',
 
             'src/main/plugin/percentage_time_test/vissense.plugin.percentage_time_test.js',
-            'src/main/plugin/percentage_time_test/vissense.plugin.50_1_test.js',
 
             'spec/**/*.js',
             // fixtures
@@ -42,8 +39,7 @@ module.exports = function(config) {
           'src/main/**/*.js': ['coverage']
         },
  
-        browsers: ['PhantomJS', 'Chrome'/*, 'Firefox', 'Opera'*/],
-        //browsers: ['PhantomJS'],
+        browsers: ['PhantomJS', 'Firefox'],
 
         customLaunchers: {
           Chrome_without_security: {

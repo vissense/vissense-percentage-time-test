@@ -1,12 +1,19 @@
-# vissense-timer.js
+[![Build Status](https://api.travis-ci.org/vissense/vissense-percentage-time-test.png?branch=master)](https://api.travis-ci.org/vissense/vissense-percentage-time-test)
 
-* destination file contains again.js
+# vissense-percentage-time-test
 
-### What it does
- * provides a convenience class for periodically tasks based on elements visibility
- * updates a vismon object every X milliseconds and triggers registered handlers
+Percentage Time Tests for VisSense.js
 
-### What it does *not*
- * being a hundred percent accurate timer. since it updates a vismon object every X milliseconds
-   it can callback your handler X milliseconds "too late". if you want an other strategy you must
-   provide it yourself (like updating the vismon instance based on user events).
+## Get Started
+
+Install dependencies
+
+`npm install && bower install`
+
+Build Project
+
+`grunt`
+
+Run Tests
+
+Open `SpecRunner.html` in your browser and test with jasmine.

@@ -1,4 +1,4 @@
-/*! { "name": "vissense-plugin-percentage-time-test", "version": "0.1.2", "copyright": "(c) 2014 tbk" } */
+/*! { "name": "vissense-plugin-percentage-time-test", "version": "0.1.3", "copyright": "(c) 2014 tbk" } */
 
  ;(function(window, VisSense, VisSenseUtils) {
     'use strict';
