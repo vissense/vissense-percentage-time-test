@@ -29,12 +29,12 @@ module.exports = function (grunt) {
         concat: {
             tmp: {
                 options: {
-                    banner: '\n;(function(window, VisSense, VisSenseUtils) {\n\'use strict\';\n',
-                    footer: '\n})(window, window.VisSense, window.VisSenseUtils);',
+                    banner: '\n;(function(window, VisSense, undefined) {\n\'use strict\';\n',
+                    footer: '\n})(window, window.VisSense);',
                     stripBanners: true
                 },
                 src: [
-                    'src/main/plugin/percentage_time_test/vissense.plugin.percentage_time_test.js'
+                    'src/main/vissense.percentage-time-test.js'
                 ],
                 dest: '<%= dirs.tmp %>/vissense.plugin.percentage-time-test.js'
             },

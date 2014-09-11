@@ -5,7 +5,7 @@
  * Copyright 2014 tbk <theborakompanioni+vissense@gmail.com>
  * Available under MIT license <http://opensource.org/licenses/MIT>
  */
-describe('VisSensePluginPercentageTimeTest', function(undefined) {
+describe('VisSensePluginPercentageTimeTest', function() {
     'use strict';
 
    describe('vissense-plugin-percentage-time-test.js async', function() {

@@ -1,17 +1,16 @@
 /*! { "name": "vissense-plugin-percentage-time-test", "version": "0.1.3", "copyright": "(c) 2014 tbk" } */
-;(function(window, VisSense, VisSenseUtils) {
+;(function(window, VisSense, undefined) {
 'use strict';
 VisSense.fn.onPercentageTimeTestPassed = function(percentageLimit, timeLimit, callback) {
-    var me = this;
     var timeElapsed = 0;
     var timeStarted = null;
 
-    var onUpdate = function(/*monitor*/) {
+    var onUpdate = function() {
         var percentage = monitor.status().percentage();
         if(percentage < percentageLimit) {
             timeStarted = null;
         } else {
-            var now = VisSenseUtils.now();
+            var now = VisSense.Utils.now();
             timeStarted = timeStarted || now;
             timeElapsed = now - timeStarted;
         }
@@ -26,7 +25,7 @@ VisSense.fn.onPercentageTimeTestPassed = function(percentageLimit, timeLimit, ca
         }
     };
 
-    var monitor = me.monitor({
+    var monitor = this.monitor({
         strategy: new VisSense.VisMon.Strategy.NoopStrategy(),
         update: onUpdate
     });
@@ -42,4 +41,4 @@ VisSense.fn.onPercentageTimeTestPassed = function(percentageLimit, timeLimit, ca
 VisSense.fn.on50_1TestPassed = function(callback) {
     this.onPercentageTimeTestPassed(0.5, 1000, callback);
 };
-})(window, window.VisSense, window.VisSenseUtils);
+})(window, window.VisSense);

@@ -14,16 +14,15 @@
 * callback        function   the function to call when condition fulfilled
 */
 VisSense.fn.onPercentageTimeTestPassed = function(percentageLimit, timeLimit, callback) {
-    var me = this;
     var timeElapsed = 0;
     var timeStarted = null;
 
-    var onUpdate = function(/*monitor*/) {
+    var onUpdate = function() {
         var percentage = monitor.status().percentage();
         if(percentage < percentageLimit) {
             timeStarted = null;
         } else {
-            var now = VisSenseUtils.now();
+            var now = VisSense.Utils.now();
             timeStarted = timeStarted || now;
             timeElapsed = now - timeStarted;
         }
@@ -38,7 +37,7 @@ VisSense.fn.onPercentageTimeTestPassed = function(percentageLimit, timeLimit, ca
         }
     };
 
-    var monitor = me.monitor({
+    var monitor = this.monitor({
         strategy: new VisSense.VisMon.Strategy.NoopStrategy(),
         update: onUpdate
     });

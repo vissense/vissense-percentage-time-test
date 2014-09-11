@@ -15,7 +15,7 @@ module.exports = function(config) {
 
             'bower_components/vissense/dist/vissense.min.js',
 
-            'src/main/plugin/percentage_time_test/vissense.plugin.percentage_time_test.js',
+            'dist/vissense.plugin.percentage-time-test.js',
 
             'spec/**/*.js',
             // fixtures
@@ -36,9 +36,15 @@ module.exports = function(config) {
         autoWatch: true,
 
         preprocessors: {
-          'src/main/**/*.js': ['coverage']
+          'dist/vissense.plugin.percentage-time-test.js': ['coverage']
         },
- 
+
+        coverageReporter: {
+            reporters:[
+              {type: 'lcov', dir:'dist/coverage/'}
+            ]
+        },
+
         browsers: ['PhantomJS', 'Firefox'],
 
         customLaunchers: {
@@ -46,12 +52,6 @@ module.exports = function(config) {
             base: 'Chrome',
             flags: ['--disable-web-security']
           }
-        },
-
-        coverageReporter: {
-            reporters:[
-              {type: 'lcov', dir:'bin/coverage/'}
-            ]
         },
 
         // If browser does not capture in given timeout [ms], kill it
