@@ -1,4 +1,4 @@
-/*global $,VisSense,describe,it,expect,jasmine*/
+/*global $,VisSense,describe,it,expect,jasmine,beforeEach*/
 /**
  * @license
  * Vissense <http://vissense.com/>
@@ -9,10 +9,50 @@ describe('VisSensePluginPercentageTimeTest', function() {
     'use strict';
 
    describe('vissense-plugin-percentage-time-test.js async', function() {
+       var visobj;
+
+       beforeEach(function() {
+           jasmine.getFixtures().set('<div id="element" style="width: 1px; height: 1px;"></div>');
+           visobj = new VisSense($('#element')[0]);
+       });
+
+
+       it('should verify that minimum check interval is 100ms', function (done) {
+           var invocations = 0;
+
+           visobj.onPercentageTimeTestPassed(1, 10, function() {
+               invocations = 1;
+           }, 1);
+
+           setTimeout(function() {
+               expect(invocations).toBe(0);
+           }, 90);
+
+           setTimeout(function() {
+               expect(invocations).toBe(1);
+               done();
+           }, 110);
+       });
+
+
+       it('should verify that default check interval is 1000ms', function (done) {
+           var invocations = 0;
+
+           visobj.onPercentageTimeTestPassed(1, 10, function() {
+               invocations = 1;
+           });
+
+           setTimeout(function() {
+               expect(invocations).toBe(0);
+           }, 999);
+
+           setTimeout(function() {
+               expect(invocations).toBe(1);
+               done();
+           }, 1001);
+       });
 
        it('should check that the 50/1 test passes', function (done) {
-           jasmine.getFixtures().set('<div id="element" style="width: 1px; height: 1px;"></div>');
-           var visobj = new VisSense($('#element')[0]);
            var invocations = 0;
 
            var now = Date.now();
