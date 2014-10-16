@@ -29,8 +29,6 @@ module.exports = function (grunt) {
         concat: {
             tmp: {
                 options: {
-                    banner: '\n;(function(window, VisSense, undefined) {\n\'use strict\';\n',
-                    footer: '\n})(window, window.VisSense);',
                     stripBanners: true
                 },
                 src: [
@@ -51,9 +49,7 @@ module.exports = function (grunt) {
             options: {
                 banner: '<%= banner %>',
                 report: 'gzip',
-                drop_console: true,
-                sourceMap: true,
-                sourceMapName: '<%= uglify.dist.dest %>.map'
+                drop_console: true
             },
             dist: {
                 src: '<%= concat.dist.dest %>',
