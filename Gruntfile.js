@@ -180,7 +180,7 @@ module.exports = function (grunt) {
     grunt.registerTask('dist', ['clean:tmp', 'concat:tmp', 'jshint', 'clean:dist', 'concat:dist', 'uglify', 'clean:tmp']);
     grunt.registerTask('default', ['dist', 'test', 'notify:js']);
 
-    grunt.registerTask('serve', ['default', 'watch']);
-    grunt.registerTask('test', ['connect', 'jasmine', 'karma', 'notify:test']);
+    grunt.registerTask('serve', ['default', 'connect:server', 'watch']);
+    grunt.registerTask('test', ['jasmine', 'karma', 'notify:test']);
 };
 

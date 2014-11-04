@@ -1,7 +1,7 @@
 module.exports = function(config) {
     'use strict';
 
-    config.set({
+    var configuration = {
 
         // base path, that will be used to resolve files and exclude
         basePath: './',
@@ -35,6 +35,20 @@ module.exports = function(config) {
 
         autoWatch: true,
 
+        //browsers: ['PhantomJS', 'Chrome', 'Firefox', 'IE', 'Opera'],
+        browsers: ['PhantomJS', 'Chrome', 'Firefox'],
+
+        customLaunchers: {
+          Chrome_without_security: {
+            base: 'Chrome',
+            flags: ['--disable-web-security']
+          },
+          Chrome_travis_ci: {
+            base: 'Chrome',
+            flags: ['--no-sandbox']
+          }
+        },
+
         preprocessors: {
           'dist/vissense.plugin.percentage-time-test.js': ['coverage']
         },
@@ -45,19 +59,23 @@ module.exports = function(config) {
             ]
         },
 
-        browsers: ['PhantomJS', 'Firefox'],
-
-        customLaunchers: {
-          Chrome_without_security: {
-            base: 'Chrome',
-            flags: ['--disable-web-security']
-          }
-        },
-
         // If browser does not capture in given timeout [ms], kill it
         captureTimeout: 60000,
  
         // if true, it capture browsers, run tests and exit
         singleRun: true
-    });
+    };
+
+    if(process.env.TRAVIS){
+        configuration.browsers = ['PhantomJS', 'Firefox', 'Chrome_travis_ci'];
+    }
+    
+    if(process.platform === 'win32') {
+        // @link https://github.com/karma-runner/karma-phantomjs-launcher/issues/27
+        // @link https://github.com/karma-runner/karma/issues/931
+        configuration.browsers.splice(configuration.browsers.indexOf('PhantomJS'), 1);
+        configuration.browsers.push('IE');
+    }
+
+    config.set(configuration);
 };
