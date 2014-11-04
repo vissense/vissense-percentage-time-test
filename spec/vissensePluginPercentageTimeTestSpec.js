@@ -1,4 +1,4 @@
-/*global $,VisSense,describe,it,expect,jasmine,beforeEach*/
+/*global $,VisSense,describe,it,expect,jasmine,beforeEach */
 /**
  * @license
  * Vissense <http://vissense.com/>
@@ -7,6 +7,21 @@
  */
 describe('VisSensePluginPercentageTimeTest', function() {
     'use strict';
+
+    function fireScrollEvent() {
+      //var event = new window.Event('scroll');
+      //window.dispatchEvent(event);
+      // Create the event.
+      var event = document.createEvent('Event');
+
+      // Define that the event name is 'build'.
+      event.initEvent('scroll', true, true);
+
+      // target can be any Element or other EventTarget.
+      window.dispatchEvent(event);
+    }
+
+    fireScrollEvent();
 
    describe('vissense-plugin-percentage-time-test.js async', function() {
        var visobj;
@@ -31,7 +46,7 @@ describe('VisSensePluginPercentageTimeTest', function() {
            setTimeout(function() {
                expect(invocations).toBe(1);
                done();
-           }, 110);
+           }, 399);
        });
 
 
@@ -49,7 +64,7 @@ describe('VisSensePluginPercentageTimeTest', function() {
            setTimeout(function() {
                expect(invocations).toBe(1);
                done();
-           }, 1001);
+           }, 1999);
        });
 
        it('should check that the 50/1 test passes', function (done) {
@@ -71,7 +86,7 @@ describe('VisSensePluginPercentageTimeTest', function() {
                expect(invocations).toBe(1);
 
                expect(duration).toBeGreaterThan(999);
-               expect(duration).toBeLessThan(1099);
+               expect(duration).toBeLessThan(1999);
 
                done();
            }, 3501);
@@ -90,7 +105,37 @@ describe('VisSensePluginPercentageTimeTest', function() {
            setTimeout(function() {
                expect(invocations).toBe(0);
                done();
-           }, 1200);
+           }, 1999);
+       });
+
+       it('should check that the 50/1 test does NOT pass when element becomes hidden before limit has been reached', function (done) {
+           jasmine.getFixtures().set('<div id="element" style="width: 10px; height: 10px; display:none;"></div>');
+           var visobj = new VisSense($('#element')[0]);
+
+           var invocations = 0;
+
+           visobj.on50_1TestPassed(function() {
+               invocations = 1;
+           });
+
+           setTimeout(function() {
+               expect(invocations).toBe(0);
+           }, 100);
+
+           setTimeout(function() {
+               $('#element')[0].style.display = 'block';
+               fireScrollEvent();
+           }, 200);
+
+           setTimeout(function() {
+               $('#element')[0].style.display = 'none';
+               fireScrollEvent();
+           }, 800);
+
+           setTimeout(function() {
+               expect(invocations).toBe(0);
+               done();
+           }, 1999);
        });
 
    });
