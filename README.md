@@ -1,6 +1,6 @@
 [![Build Status](https://api.travis-ci.org/vissense/vissense-percentage-time-test.png?branch=master)](https://travis-ci.org/vissense/vissense-percentage-time-test)
 [![Dependency Status](https://david-dm.org/vissense/vissense-percentage-time-test.svg)](https://david-dm.org/vissense/vissense-percentage-time-test)
-[![devDependency Status](https://david-dm.org/vissense/vissense-percentage-time-test/dev-status.svg)](https://travis-ci.org/vissense/vissense-percentage-time-test#info=devDependencies)
+[![devDependency Status](https://david-dm.org/vissense/vissense-percentage-time-test/dev-status.svg)](https://david-dm.org/vissense/vissense-percentage-time-test#info=devDependencies)
 
 # vissense-percentage-time-test
 
