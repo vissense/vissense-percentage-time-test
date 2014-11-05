@@ -190,6 +190,7 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-clean');
 
     grunt.loadNpmTasks('grunt-bump');
+    grunt.loadNpmTasks('grunt-coveralls');
     grunt.loadNpmTasks('grunt-karma');
     grunt.loadNpmTasks('grunt-micro');
     grunt.loadNpmTasks('grunt-notify');
