@@ -44,8 +44,12 @@
             percentageLimit: 1,
             timeLimit: 1000,
             interval: 100,
-            debounce: 30
+            debounce: 30,
+            strategy: []
         });
+
+        var strategy = !VisSense.Utils.isArray(_config.strategy) || _config.strategy.length > 0  ? 
+            _config.strategy : new VisSense.VisMon.Strategy.EventStrategy({ debounce: _config.debounce });
 
         var timeElapsed = 0;
         var timeStarted = null;
@@ -53,7 +57,7 @@
         var timeoutId = null;
 
         var outerMonitor = this.monitor({
-            strategy: new VisSense.VisMon.Strategy.EventStrategy({ debounce: _config.debounce }),
+            strategy: strategy,
             visible: function() {
                 innerMonitor = (innerMonitor || outerMonitor.visobj().monitor({
                     update: function() {

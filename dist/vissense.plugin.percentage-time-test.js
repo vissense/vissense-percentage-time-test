@@ -1,4 +1,4 @@
-/*! { "name": "vissense-plugin-percentage-time-test", "version": "0.1.4", "copyright": "(c) 2014 tbk" } */;(function (root, factory) {
+/*! { "name": "vissense-plugin-percentage-time-test", "version": "0.2.0", "copyright": "(c) 2014 tbk" } */;(function (root, factory) {
     'use strict';
 
     if (typeof define === 'function' && define.amd) {
@@ -21,8 +21,8 @@
 
     * @param {Number} config.percentageLimit Percentage limit between 0 and 1
     * @param {Number} config.timeLimit Time limit in milliseconds
-    * @param {Number} config.debounce Time in milliseconds to debounce the update (e.g. when scrolling)
     * @param {Number} config.interval Time in milliseconds between checks (default: 100)
+    * @param {Number} config.debounce Time in milliseconds to debounce the update (e.g. when scrolling)
     *
     * @returns {undefined}
     *
@@ -39,9 +39,13 @@
         var _config = VisSense.Utils.defaults(config, {
             percentageLimit: 1,
             timeLimit: 1000,
+            interval: 100,
             debounce: 30,
-            interval: 100
+            strategy: []
         });
+
+        var strategy = !VisSense.Utils.isArray(_config.strategy) || _config.strategy.length > 0  ? 
+            _config.strategy : new VisSense.VisMon.Strategy.EventStrategy({ debounce: _config.debounce });
 
         var timeElapsed = 0;
         var timeStarted = null;
@@ -49,7 +53,7 @@
         var timeoutId = null;
 
         var outerMonitor = this.monitor({
-            strategy: new VisSense.VisMon.Strategy.EventStrategy({ debounce: _config.debounce }),
+            strategy: strategy,
             visible: function() {
                 innerMonitor = (innerMonitor || outerMonitor.visobj().monitor({
                     update: function() {
