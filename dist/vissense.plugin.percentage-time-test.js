@@ -1,4 +1,4 @@
-/*! { "name": "vissense-plugin-percentage-time-test", "version": "0.2.0", "copyright": "(c) 2014 tbk" } */;(function (root, factory) {
+/*! { "name": "vissense-plugin-percentage-time-test", "version": "0.2.1", "copyright": "(c) 2014 tbk" } */;(function (root, factory) {
     'use strict';
 
     if (typeof define === 'function' && define.amd) {

@@ -149,6 +149,22 @@ module.exports = function (grunt) {
                 configFile: 'karma.conf.js'
             }
         },
+        micro: {
+            options: {
+              limit: 1024
+            },
+            dist: {
+              src: '<%= uglify.dist.dest %>'
+            }
+        },
+        coveralls: {
+            options: {
+                force: true
+            },
+            target: {
+                src: '<%= dirs.coverage %>/lcov/lcov.info'
+            }
+        },
         notify: {
             js: {
                 options: {
@@ -166,21 +182,24 @@ module.exports = function (grunt) {
     });
 
     grunt.loadNpmTasks('grunt-contrib-concat');
-    grunt.loadNpmTasks('grunt-bump');
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-contrib-connect');
     grunt.loadNpmTasks('grunt-contrib-jasmine');
     grunt.loadNpmTasks('grunt-contrib-clean');
-    grunt.loadNpmTasks('grunt-karma');
 
+    grunt.loadNpmTasks('grunt-bump');
+    grunt.loadNpmTasks('grunt-karma');
+    grunt.loadNpmTasks('grunt-micro');
     grunt.loadNpmTasks('grunt-notify');
 
     grunt.registerTask('dist', ['clean:tmp', 'concat:tmp', 'jshint', 'clean:dist', 'concat:dist', 'uglify', 'clean:tmp']);
-    grunt.registerTask('default', ['dist', 'test', 'notify:js']);
+    grunt.registerTask('default', ['dist', 'test', 'micro', 'notify:js']);
 
     grunt.registerTask('serve', ['default', 'connect:server', 'watch']);
     grunt.registerTask('test', ['jasmine', 'karma', 'notify:test']);
+
+    grunt.registerTask('coverage', ['coveralls']);
 };
 
