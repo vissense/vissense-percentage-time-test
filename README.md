@@ -1,4 +1,5 @@
 [![Build Status](https://api.travis-ci.org/vissense/vissense-percentage-time-test.png?branch=master)](https://travis-ci.org/vissense/vissense-percentage-time-test)
+[![Coverage Status](https://coveralls.io/repos/vissense/vissense-percentage-time-test/badge.png?branch=master)](https://coveralls.io/r/vissense/vissense-percentage-time-test?branch=master)
 [![Dependency Status](https://david-dm.org/vissense/vissense-percentage-time-test.svg)](https://david-dm.org/vissense/vissense-percentage-time-test)
 [![devDependency Status](https://david-dm.org/vissense/vissense-percentage-time-test/dev-status.svg)](https://david-dm.org/vissense/vissense-percentage-time-test#info=devDependencies)
 
