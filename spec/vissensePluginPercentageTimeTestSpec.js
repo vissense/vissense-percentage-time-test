@@ -1,4 +1,4 @@
-/*global $,VisSense,describe,it,expect,jasmine,beforeEach,spyOn */
+/*global $,VisSense,describe,it,expect,jasmine,beforeEach,spyOn,afterEach*/
 /**
  * @license
  * Vissense <http://vissense.com/>
@@ -36,25 +36,30 @@ describe('VisSensePluginPercentageTimeTest', function() {
 
       observer = { callback: VisSense.Utils.noop };
       spyOn(observer, 'callback');
-    });
+
+       jasmine.clock().install();
+
+       jasmine.clock().mockDate();
+   });
+
+   afterEach(function() {
+       jasmine.clock().uninstall();
+   });
      
-    it('should verify that default check interval is 1000ms', function (done) {
-      visobj.onPercentageTimeTestPassed(function() {
+    it('should verify that default check interval is 1000ms', function () {
+      visobj.onPercentageTimeTestPassed(0.5, 1000, function() {
           observer.callback();
       });
 
-      setTimeout(function() {
-          expect(observer.callback).not.toHaveBeenCalled();
-      }, 999);
+      jasmine.clock().tick(999);
+      expect(observer.callback).not.toHaveBeenCalled();
 
-      setTimeout(function() {
-          expect(observer.callback.calls.count()).toEqual(1);
+      jasmine.clock().tick(1000);
+      expect(observer.callback.calls.count()).toEqual(1);
 
-          done();
-      }, 1999);
     });
 
-    it('should check that the 50/1 test does NOT pass on hidden elements', function (done) {
+    it('should check that the 50/1 test does NOT pass on hidden elements', function () {
       jasmine.getFixtures().set('<div id="element" style="display:none;"></div>');
       var visobj = new VisSense($('#element')[0]);
 
@@ -62,37 +67,25 @@ describe('VisSensePluginPercentageTimeTest', function() {
           observer.callback();
       });
 
-      setTimeout(function() {
-          expect(observer.callback).not.toHaveBeenCalled();
-
-          done();
-      }, 1999);
+      jasmine.clock().tick(99999);
+      expect(observer.callback).not.toHaveBeenCalled();
     });
      
-    it('should check that the 50/1 test passes on visible elements', function (done) {
-      var now = Date.now();
-      var duration = null;
-
+    it('should check that the 50/1 test passes on visible elements', function () {
       visobj.on50_1TestPassed(function() {
           observer.callback();
-          duration = Date.now() - now;
       });
 
-      setTimeout(function() {
-          expect(observer.callback).not.toHaveBeenCalled();
-      }, 999);
+      jasmine.clock().tick(999);
 
-      setTimeout(function() {
-          expect(observer.callback.calls.count()).toEqual(1);
+      expect(observer.callback).not.toHaveBeenCalled();
 
-          expect(duration).toBeGreaterThan(999);
-          expect(duration).toBeLessThan(1999);
+      jasmine.clock().tick(3000);
 
-          done();
-      }, 3501);
+      expect(observer.callback.calls.count()).toEqual(1);
     });
 
-    it('should check that the 50/1 test does NOT pass when element becomes hidden before limit has been reached', function (done) {
+    it('should check that the 50/1 test does NOT pass when element becomes hidden before limit has been reached', function () {
       jasmine.getFixtures().set('<div id="element" style="width: 10px; height: 10px; display:none;"></div>');
       var visobj = new VisSense($('#element')[0]);
 
@@ -103,17 +96,19 @@ describe('VisSensePluginPercentageTimeTest', function() {
       // show and hide the element in under a second
       showHide($('#element')[0], 1, 999);
 
-      setTimeout(function() {
-          expect(observer.callback).not.toHaveBeenCalled();
-      }, 199);
+      jasmine.clock().tick(200);
+      expect(observer.callback).not.toHaveBeenCalled();
 
-      setTimeout(function() {
-          expect(observer.callback).not.toHaveBeenCalled();
-          done();
-      }, 1999);
+      // if we'd tick 1500 at once, than the callback would be triggered..
+      jasmine.clock().tick(300);
+      jasmine.clock().tick(300);
+      jasmine.clock().tick(300);
+      jasmine.clock().tick(300);
+      
+      expect(observer.callback).not.toHaveBeenCalled();
     });
 
-    it('should check that the 50/1 test does pass when element becomes hidden after limit has been reached', function (done) {
+    it('should check that the 50/1 test does pass when element becomes hidden after limit has been reached', function () {
       jasmine.getFixtures().set('<div id="element" style="width: 10px; height: 10px; display:none;"></div>');
       var visobj = new VisSense($('#element')[0]);
 
@@ -124,15 +119,12 @@ describe('VisSensePluginPercentageTimeTest', function() {
       // show and hide the element in over a second
       showHide($('#element')[0], 1, 1199);
 
-      setTimeout(function() {
-          expect(observer.callback).not.toHaveBeenCalled();
-      }, 199);
+      jasmine.clock().tick(199);
+      expect(observer.callback).not.toHaveBeenCalled();
 
-      setTimeout(function() {
-          expect(observer.callback.calls.count()).toEqual(1);
+      jasmine.clock().tick(1800);
+      expect(observer.callback.calls.count()).toEqual(1);
 
-          done();
-      }, 1999);
     });
 
   });

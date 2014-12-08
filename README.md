@@ -3,20 +3,28 @@
 [![Dependency Status](https://david-dm.org/vissense/vissense-percentage-time-test.svg)](https://david-dm.org/vissense/vissense-percentage-time-test)
 [![devDependency Status](https://david-dm.org/vissense/vissense-percentage-time-test/dev-status.svg)](https://david-dm.org/vissense/vissense-percentage-time-test#info=devDependencies)
 
-# vissense-percentage-time-test
+VisSense.js: Percentage Time Test
+====
 
-Percentage Time Tests for VisSense.js
+A VisSense.js plugin for testing percentages.
 
-## Get Started
+e.g. Invoke a callback if an element has been visible at least 60% for 5 seconds:
+```javascript
+var video = $('#video'); 
+var visibility = VisSense(video[0]);
+visibility.onPercentageTimeTestPassed(0.5, 5000, function() {
+    console.log('element passed test for 60% visibility over 5 seconds.');
+});
+```
 
-Install dependencies
+Contribute
+------------
 
-`npm install && bower install`
+- Issue Tracker: https://github.com/vissense/vissense-percentage-time-test/issues
+- Source Code: https://github.com/vissense/vissense-percentage-time-test
 
-Build Project
+License
+-------
 
-`grunt`
-
-Run Tests
-
-Open `SpecRunner.html` in your browser and test with jasmine.
+The project is licensed under the MIT license. See
+[LICENSE](https://github.com/vissense/vissense/blob/master/LICENSE) for details.

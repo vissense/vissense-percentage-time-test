@@ -32,7 +32,7 @@ module.exports = function (grunt) {
                     stripBanners: true
                 },
                 src: [
-                    'src/main/vissense.percentage-time-test.js'
+                    'lib/vissense.percentage-time-test.js'
                 ],
                 dest: '<%= dirs.tmp %>/vissense.plugin.percentage-time-test.js'
             },
