@@ -12,7 +12,7 @@ e.g. Invoke a callback if an element has been visible at least 60% for 5 seconds
 ```javascript
 var video = $('#video'); 
 var visibility = VisSense(video[0]);
-visibility.onPercentageTimeTestPassed(0.5, 5000, function() {
+visibility.onPercentageTimeTestPassed(0.6, 5000, function() {
     console.log('element passed test for 60% visibility over 5 seconds.');
 });
 ```
