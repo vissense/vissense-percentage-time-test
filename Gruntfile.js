@@ -11,7 +11,6 @@ module.exports = function (grunt) {
             '<%= pkg.homepage ? "\\"homepage\\": \\"" + pkg.homepage + "\\"," : "" %>' +
             '"copyright": "(c) <%= grunt.template.today("yyyy") %> <%= pkg.author.name %>" ' +
         '} */',
-
         dirs :{
             tmp: './tmp',
             dist: './dist',
@@ -45,6 +44,16 @@ module.exports = function (grunt) {
                 dest: '<%= dirs.dist %>/vissense.plugin.percentage-time-test.js'
             }
         },
+        umd: {
+          all: {
+            options: {
+              src:  '<%= concat.tmp.dest %>',
+              dest: '<%= concat.tmp.dest %>',
+              template: './templates/browser-vissense-percentage-time-test.hbs',
+              indent: 2
+            }
+          }
+        },
         uglify: {
             options: {
                 banner: '<%= banner %>',
@@ -58,7 +67,7 @@ module.exports = function (grunt) {
         },
         jshint: {
             options: {
-                jshintrc:true
+                jshintrc: true
             },
             gruntfile: {
                 src: 'Gruntfile.js'
@@ -67,7 +76,7 @@ module.exports = function (grunt) {
                 src: 'karma.conf.js'
             },
             src_test: {
-                src: ['tmp/**/*.js', 'spec/**/*.js']
+                src: ['lib/**/*.js', 'spec/**/*.js']
             }
         },
 
@@ -194,8 +203,9 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-karma');
     grunt.loadNpmTasks('grunt-micro');
     grunt.loadNpmTasks('grunt-notify');
+    grunt.loadNpmTasks('grunt-umd');
 
-    grunt.registerTask('dist', ['clean:tmp', 'concat:tmp', 'jshint', 'clean:dist', 'concat:dist', 'uglify', 'clean:tmp']);
+    grunt.registerTask('dist', ['jshint', 'clean:tmp', 'concat:tmp', 'umd', 'clean:dist', 'concat:dist', 'uglify', 'clean:tmp']);
     grunt.registerTask('default', ['dist', 'test', 'micro', 'notify:js']);
 
     grunt.registerTask('serve', ['default', 'connect:server', 'watch']);

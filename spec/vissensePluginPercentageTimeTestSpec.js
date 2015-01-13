@@ -45,16 +45,19 @@ describe('VisSensePluginPercentageTimeTest', function() {
    afterEach(function() {
        jasmine.clock().uninstall();
    });
-     
-    it('should verify that default check interval is 1000ms', function () {
-      visobj.onPercentageTimeTestPassed(0.5, 1000, function() {
-          observer.callback();
+
+    it('should verify that default check interval is 100ms', function () {
+      visobj.onPercentageTimeTestPassed(function() {
+        observer.callback();
+      }, {
+        percentageLimit: 0.5,
+        timeLimit: 1000
       });
 
       jasmine.clock().tick(999);
       expect(observer.callback).not.toHaveBeenCalled();
 
-      jasmine.clock().tick(1000);
+      jasmine.clock().tick(5000);
       expect(observer.callback.calls.count()).toEqual(1);
 
     });
@@ -70,7 +73,7 @@ describe('VisSensePluginPercentageTimeTest', function() {
       jasmine.clock().tick(99999);
       expect(observer.callback).not.toHaveBeenCalled();
     });
-     
+
     it('should check that the 50/1 test passes on visible elements', function () {
       visobj.on50_1TestPassed(function() {
           observer.callback();
@@ -104,7 +107,7 @@ describe('VisSensePluginPercentageTimeTest', function() {
       jasmine.clock().tick(300);
       jasmine.clock().tick(300);
       jasmine.clock().tick(300);
-      
+
       expect(observer.callback).not.toHaveBeenCalled();
     });
 
@@ -117,12 +120,14 @@ describe('VisSensePluginPercentageTimeTest', function() {
       });
 
       // show and hide the element in over a second
-      showHide($('#element')[0], 1, 1199);
+      showHide($('#element')[0], 1, 1010);
+      jasmine.clock().tick(2); // shows the element
 
-      jasmine.clock().tick(199);
+      jasmine.clock().tick(910);
       expect(observer.callback).not.toHaveBeenCalled();
 
-      jasmine.clock().tick(1800);
+      jasmine.clock().tick(10 + 1000); // VisSense default PollingStrategy interval is 1000ms
+
       expect(observer.callback.calls.count()).toEqual(1);
 
     });

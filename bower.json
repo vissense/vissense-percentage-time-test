@@ -33,6 +33,6 @@
     "jasmine-jquery": "velesin/jasmine-jquery#2.0.5"
   },
   "dependencies": {
-    "vissense": "vissense/vissense#0.2.0"
+    "vissense": "vissense/vissense#0.2.1"
   }
 }
