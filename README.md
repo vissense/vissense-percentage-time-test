@@ -27,4 +27,4 @@ License
 -------
 
 The project is licensed under the MIT license. See
-[LICENSE](https://github.com/vissense/vissense/blob/master/LICENSE) for details.
+[LICENSE](https://github.com/vissense/vissense-percentage-time-test/blob/master/LICENSE) for details.

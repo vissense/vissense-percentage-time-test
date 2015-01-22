@@ -30,7 +30,7 @@
    *
    * If not provided, the check interval defaults to 1000 ms.
    */
-  VisSense.fn.onPercentageTimeTestPassed = function(callback, config) {
+  VisSense.fn.onPercentageTimeTestPassed = function (callback, config) {
     var _config = VisSense.Utils.defaults(config, {
       percentageLimit: 1,
       timeLimit: 1000,
@@ -46,10 +46,10 @@
 
     var outerMonitor = this.monitor({
       strategy: _config.strategy,
-      visible: function() {
+      visible: function () {
         innerMonitor = (innerMonitor || outerMonitor.visobj().monitor({
           strategy: [], // no strategy!
-          update: function() {
+          update: function () {
             var percentage = innerMonitor.state().percentage;
             if (percentage < _config.percentageLimit) {
               timeStarted = null;
@@ -65,7 +65,7 @@
 
               callback();
             } else {
-              timeoutId = setTimeout(function() {
+              timeoutId = setTimeout(function () {
                 innerMonitor.update();
               }, _config.interval);
             }
@@ -74,7 +74,7 @@
 
         innerMonitor.update();
       },
-      hidden: function() {
+      hidden: function () {
         clearTimeout(timeoutId);
       }
     });
@@ -95,7 +95,7 @@
    * This function invokes a callback if and only if the element has been visible at least
    * 50 percent for at least 1 second. It checks the visibility in 100ms intervals.
    */
-  VisSense.fn.on50_1TestPassed = function(callback, config) {
+  VisSense.fn.on50_1TestPassed = function (callback, config) {
     this.onPercentageTimeTestPassed(callback, VisSense.Utils.extend(config || {}, {
       percentageLimit: 0.5,
       timeLimit: 1000,
