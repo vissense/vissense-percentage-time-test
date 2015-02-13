@@ -26,6 +26,25 @@ describe('VisSensePluginPercentageTimeTest', function () {
     }, hide);
   }
 
+  function jumpToFixedPositionAndBack(element, leftInPixel, show, hide) {
+    var formPosition = element.style.position;
+    var formerLeft = element.style.left;
+    var formerTop = element.style.top;
+    setTimeout(function () {
+      element.style.position = 'fixed';
+      element.style.top = '0';
+      element.style.left = leftInPixel + 'px';
+      fireScrollEvent();
+    }, show);
+
+    setTimeout(function () {
+      element.style.display = formPosition;
+      element.style.left = formerLeft;
+      element.style.top = formerTop;
+      fireScrollEvent();
+    }, hide);
+  }
+
 
   describe('vissense-plugin-percentage-time-test.js async', function () {
     var visobj, observer;
@@ -88,7 +107,7 @@ describe('VisSensePluginPercentageTimeTest', function () {
       expect(observer.callback.calls.count()).toEqual(1);
     });
 
-    it('should check that the 50/1 test does NOT pass when element becomes hidden before limit has been reached', function () {
+    it('should check that the 50/1 test does NOT pass when element becomes hidden before time limit has been reached', function () {
       jasmine.getFixtures().set('<div id="element" style="width: 10px; height: 10px; display:none;"></div>');
       var visobj = new VisSense($('#element')[0]);
 
@@ -98,6 +117,32 @@ describe('VisSensePluginPercentageTimeTest', function () {
 
       // show and hide the element in under a second
       showHide($('#element')[0], 1, 999);
+
+      jasmine.clock().tick(200);
+      expect(observer.callback).not.toHaveBeenCalled();
+
+      // if we'd tick 1500 at once, than the callback would be triggered..
+      jasmine.clock().tick(300);
+      jasmine.clock().tick(300);
+      jasmine.clock().tick(300);
+      jasmine.clock().tick(300);
+
+      expect(observer.callback).not.toHaveBeenCalled();
+    });
+
+    it('should check that the 50/1 test does NOT pass when elements visbility ' +
+       'falls below percentage limit before time limit has been reached', function () {
+      jasmine.getFixtures().set('<div id="element" style="width: 10px; height: 10px;"></div>');
+      var visobj = new VisSense($('#element')[0]);
+
+      visobj.on50_1TestPassed(function () {
+        observer.callback();
+      });
+
+      jasmine.clock().tick(200);
+
+      var leftInPixel = '-9';
+      jumpToFixedPositionAndBack($('#element')[0], leftInPixel, 1, 999);
 
       jasmine.clock().tick(200);
       expect(observer.callback).not.toHaveBeenCalled();

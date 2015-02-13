@@ -10,7 +10,7 @@ module.exports = function (grunt) {
     '"version": "<%= pkg.version %>", ' +
     '<%= pkg.homepage ? "\\"homepage\\": \\"" + pkg.homepage + "\\"," : "" %>' +
     '"copyright": "(c) <%= grunt.template.today("yyyy") %> <%= pkg.author.name %>" ' +
-    '} */',
+    '} */\n',
     dirs: {
       tmp: './tmp',
       dist: './dist',
@@ -214,4 +214,3 @@ module.exports = function (grunt) {
 
   grunt.registerTask('coverage', ['coveralls']);
 };
-
