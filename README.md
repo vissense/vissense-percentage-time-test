@@ -6,17 +6,42 @@
 VisSense.js: Percentage Time Test
 ====
 
-A VisSense.js plugin for testing percentages.
+A [VisSense.js](https://github.com/vissense/vissense) plugin for testing percentages over time.
 
-e.g. Invoke a callback if an element has been visible at least 60% for 5 seconds:
+Examples
+===
+
+Invoke a callback if an element has been visible at least 50% for 1 second:
 ```javascript
-var video = $('#video'); 
-var visibility = VisSense(video[0]);
-visibility.onPercentageTimeTestPassed(0.6, 5000, function() {
-    console.log('element passed test for 60% visibility over 5 seconds.');
+var element = $('#myElement'); 
+var visibility = VisSense(element[0]);
+
+visibility.onPercentageTimeTestPassed(function() {
+    console.log('element passed test for 50% visibility over 1 second.');
+}, {
+  percentageLimit: 0.5,
+  timeLimit: 1000,
+  interval: 100
+});
+
+// this is an alias for the above call as it is an IAB standard
+visibility.on50_1TestPassed(function() {
+    console.log('element passed test for 50% visibility over 1 second.');
 });
 ```
 
+Invoke a callback if an element has been visible at least 60% for 5 seconds:
+```javascript
+var video = $('#video'); 
+var visibility = VisSense(video[0]);
+visibility.onPercentageTimeTestPassed(function() {
+    console.log('element passed test for 60% visibility over 5 seconds.');
+}, {
+  percentageLimit: 0.6,
+  timeLimit: 5000,
+  interval: 200
+});
+```
 Contribute
 ------------
 
