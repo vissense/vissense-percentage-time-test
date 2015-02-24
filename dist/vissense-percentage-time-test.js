@@ -27,23 +27,19 @@
             timeLimit: 1e3,
             interval: 100,
             strategy: undefined
-        }), inner = {
-            monitor: null
-        }, outerMonitor = new VisSense(this.element(), {
+        }), innerMonitor = null, outerMonitor = new VisSense(this.element(), {
             hidden: _config.percentageLimit - .01
         }).monitor({
             strategy: _config.strategy,
-            update: function(monitor) {},
-            fullyvisible: function() {},
             visible: function(monitor) {
-                null === inner.monitor && (inner.monitor = createInnerMonitor(monitor, callback, _config)), 
-                inner.monitor.start();
+                null === innerMonitor && (innerMonitor = createInnerMonitor(monitor, callback, _config)), 
+                innerMonitor.start();
             },
             hidden: function() {
-                null !== inner.monitor && inner.monitor.stop();
+                null !== innerMonitor && innerMonitor.stop();
             },
             stop: function() {
-                null !== inner.monitor && inner.monitor.stop();
+                null !== innerMonitor && innerMonitor.stop();
             }
         });
         return outerMonitor.start(), function() {
