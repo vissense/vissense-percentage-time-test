@@ -29,7 +29,7 @@
             strategy: undefined
         }), inner = {
             monitor: null
-        }, outerMonitor = VisSense.of(this._element, {
+        }, outerMonitor = new VisSense(this.element(), {
             hidden: _config.percentageLimit - .01
         }).monitor({
             strategy: _config.strategy,

@@ -17,6 +17,7 @@
     "spec",
     "bower_components",
     "node_modules",
+    "templates",
     "Gruntfile.js",
     "karma.conf.js",
     "SpecRunner.html",
@@ -33,6 +34,6 @@
     "jasmine-jquery": "velesin/jasmine-jquery#2.0.6"
   },
   "dependencies": {
-    "vissense": "vissense/vissense#0.4.0-rc1"
+    "vissense": "vissense/vissense#master"
   }
 }
