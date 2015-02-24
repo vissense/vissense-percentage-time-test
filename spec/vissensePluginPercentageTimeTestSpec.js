@@ -14,16 +14,19 @@ describe('VisSensePluginPercentageTimeTest', function () {
     window.dispatchEvent(event);
   }
 
-  function showHide(element, show, hide) {
+  function showHide(element, config) {
+    expect(config.show > 0).toBe(true);
+    expect(config.hide > 0).toBe(true);
+
     setTimeout(function () {
       element.style.display = 'block';
       fireScrollEvent();
-    }, show);
+    }, config.show);
 
     setTimeout(function () {
       element.style.display = 'none';
       fireScrollEvent();
-    }, hide);
+    }, config.hide);
   }
 
   function jumpToFixedPositionAndBack(element, leftInPixel, show, hide) {
@@ -102,7 +105,7 @@ describe('VisSensePluginPercentageTimeTest', function () {
 
       expect(observer.callback).not.toHaveBeenCalled();
 
-      jasmine.clock().tick(3000);
+      jasmine.clock().tick(2);
 
       expect(observer.callback.calls.count()).toEqual(1);
     });
@@ -116,7 +119,10 @@ describe('VisSensePluginPercentageTimeTest', function () {
       });
 
       // show and hide the element in under a second
-      showHide($('#element')[0], 1, 999);
+      showHide($('#element')[0], {
+        show: 1,
+        hide: 999
+      });
 
       jasmine.clock().tick(200);
       expect(observer.callback).not.toHaveBeenCalled();
@@ -156,8 +162,10 @@ describe('VisSensePluginPercentageTimeTest', function () {
       expect(observer.callback).not.toHaveBeenCalled();
     });
 
-    it('should check that the 50/1 test does pass when element becomes hidden after limit has been reached', function () {
-      jasmine.getFixtures().set('<div id="element" style="width: 10px; height: 10px; display:none;"></div>');
+
+    it('should check that the 50/1 test does pass when an initial VISIBLE element ' +
+    'becomes hidden after limit has been reached', function () {
+      jasmine.getFixtures().set('<div id="element" style="width: 10px; height: 10px;"></div>');
       var visobj = new VisSense($('#element')[0]);
 
       visobj.on50_1TestPassed(function () {
@@ -165,15 +173,78 @@ describe('VisSensePluginPercentageTimeTest', function () {
       });
 
       // show and hide the element in over a second
-      showHide($('#element')[0], 1, 1010);
-      jasmine.clock().tick(2); // shows the element
+      showHide($('#element')[0], {
+        show: 1,
+        hide: 1010
+      });
 
-      jasmine.clock().tick(910);
+      expect(visobj.isVisible()).toBe(true);
+
+      jasmine.clock().tick(998); // shortly before test should be passed
+
+      expect(visobj.isVisible()).toBe(true);
+
       expect(observer.callback).not.toHaveBeenCalled();
 
-      jasmine.clock().tick(10 + 1000); // VisSense default PollingStrategy interval is 1000ms
+      jasmine.clock().tick(2); // test should not be passed
+
+      expect(visobj.isVisible()).toBe(true);
 
       expect(observer.callback.calls.count()).toEqual(1);
+
+      jasmine.clock().tick(9);
+      jasmine.clock().tick(99);
+      jasmine.clock().tick(999);
+      jasmine.clock().tick(9999);
+
+      expect(observer.callback.calls.count()).toEqual(1);
+
+    });
+
+    it('should check that the 50/1 test does pass when an initial HIDDEN element ' +
+    'becomes hidden after limit has been reached', function () {
+      jasmine.getFixtures().set('<div id="element" style="width: 10px; height: 10px; display:none;"></div>');
+      var visobj = new VisSense($('#element')[0]);
+
+      var testOuterMonitor = null;
+      visobj.on50_1TestPassed(function () {
+        observer.callback();
+      }, {
+        strategy: [new VisSense.VisMon.Strategy.PollingStrategy({ interval: 1 }), {
+          start: function(monitor) {
+            console.log('monitor started: begin 50/1 test');
+            testOuterMonitor = monitor;
+          },
+          stop: function() {
+            console.log('monitor stopped - end 50/1 test');
+          }
+        }]
+      });
+
+      // show and hide the element in over a second
+      showHide($('#element')[0], {
+        show: 1,
+        hide: 1010
+      });
+
+      var start = Date.now();
+
+      expect(testOuterMonitor.state().visible).toBe(false);
+
+      jasmine.clock().tick(1); // element gets visible
+      jasmine.clock().tick(1); // monitor notices the change - 1 second from now on
+
+      expect(testOuterMonitor.state().visible).toBe(true);
+
+      jasmine.clock().tick(999);
+
+      expect(testOuterMonitor.state().visible).toBe(true);
+
+      jasmine.clock().tick(1);
+
+      expect(observer.callback.calls.count()).toEqual(1);
+
+      console.log('time elapsed ' + (Date.now() - start));
 
     });
 
