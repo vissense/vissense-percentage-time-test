@@ -1,7 +1,7 @@
 {
-  "name": "vissense-plugin-percentage-time-test",
+  "name": "vissense-percentage-time-test",
   "version": "0.3.0",
-  "title": "vissense-plugin-percentage-time-test.js",
+  "title": "vissense-percentage-time-test.js",
   "author": {
     "name": "tbk"
   },

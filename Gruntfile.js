@@ -24,24 +24,15 @@ module.exports = function (grunt) {
         src: ['<%= dirs.dist %>']
       }
     },
-
     concat: {
       tmp: {
         options: {
           stripBanners: true
         },
         src: [
-          'lib/vissense.percentage-time-test.js'
+          'lib/<%= pkg.name %>.js'
         ],
-        dest: '<%= dirs.tmp %>/vissense.plugin.percentage-time-test.js'
-      },
-      dist: {
-        options: {
-          banner: '<%= banner %>',
-          stripBanners: true
-        },
-        src: '<%= concat.tmp.dest %>',
-        dest: '<%= dirs.dist %>/vissense.plugin.percentage-time-test.js'
+        dest: '<%= dirs.tmp %>/<%= pkg.name %>.js'
       }
     },
     umd: {
@@ -55,14 +46,31 @@ module.exports = function (grunt) {
       }
     },
     uglify: {
-      options: {
-        banner: '<%= banner %>',
-        report: 'gzip',
-        drop_console: true
+      src: {
+        options: {
+          banner: '<%= banner %>',
+          compress: {
+            drop_console: true
+          },
+          sourceMap: false,
+          preserveComments: false,
+          beautify: true,
+          mangle: false
+        },
+        src: '<%= concat.tmp.dest %>',
+        dest: '<%= dirs.dist %>/<%= pkg.name %>.js'
       },
       dist: {
-        src: '<%= concat.dist.dest %>',
-        dest: '<%= dirs.dist %>/vissense.plugin.percentage-time-test.min.js'
+        options: {
+          banner: '<%= banner %>',
+          report: 'gzip',
+          compress: {
+            drop_console: true
+          },
+          sourceMap: false
+        },
+        src: '<%= concat.tmp.dest %>',
+        dest: '<%= dirs.dist %>/<%= pkg.name %>.min.js'
       }
     },
     jshint: {
@@ -83,7 +91,7 @@ module.exports = function (grunt) {
     jasmine: {
       coverage: {
         src: [
-          '<%= concat.dist.dest %>'
+          '<%= uglify.src.dest %>'
         ],
         options: {
           display: 'full',
@@ -205,8 +213,10 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-notify');
   grunt.loadNpmTasks('grunt-umd');
 
-  grunt.registerTask('dist', ['jshint', 'clean:tmp', 'concat:tmp', 'umd', 'clean:dist', 'concat:dist', 'uglify', 'clean:tmp']);
+  grunt.registerTask('dist', ['jshint', 'clean:tmp', 'concat:tmp', 'umd', 'clean:dist', 'uglify', 'clean:tmp']);
   grunt.registerTask('test', ['jasmine', 'karma', 'notify:test']);
+
+  grunt.registerTask('test-fast', ['jasmine', 'notify:test']);
 
   grunt.registerTask('default', ['dist', 'test', 'micro', 'notify:js']);
 

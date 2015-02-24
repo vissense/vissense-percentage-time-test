@@ -15,7 +15,7 @@ module.exports = function(config) {
 
             'bower_components/vissense/dist/vissense.min.js',
 
-            'dist/vissense.plugin.percentage-time-test.js',
+            'dist/vissense-percentage-time-test.js',
 
             'spec/**/*.js',
             // fixtures
@@ -50,7 +50,7 @@ module.exports = function(config) {
         },
 
         preprocessors: {
-          'dist/vissense.plugin.percentage-time-test.js': ['coverage']
+          'dist/vissense-percentage-time-test.js': ['coverage']
         },
 
         coverageReporter: {
@@ -61,7 +61,7 @@ module.exports = function(config) {
 
         // If browser does not capture in given timeout [ms], kill it
         captureTimeout: 60000,
- 
+
         // if true, it capture browsers, run tests and exit
         singleRun: true
     };
@@ -69,7 +69,7 @@ module.exports = function(config) {
     if(process.env.TRAVIS){
         configuration.browsers = ['PhantomJS', 'Firefox', 'Chrome_travis_ci'];
     }
-    
+
     if(process.platform === 'win32') {
         // @link https://github.com/karma-runner/karma-phantomjs-launcher/issues/27
         // @link https://github.com/karma-runner/karma/issues/931

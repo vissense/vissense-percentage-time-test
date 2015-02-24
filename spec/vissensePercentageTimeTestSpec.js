@@ -1,4 +1,4 @@
-/*global $,VisSense,describe,it,expect,jasmine,beforeEach,spyOn,afterEach*/
+/*global $,VisSense,describe,it,xit,expect,jasmine,beforeEach,spyOn,afterEach*/
 /**
  * @license
  * Vissense <http://vissense.com/>
@@ -7,6 +7,7 @@
  */
 describe('VisSensePluginPercentageTimeTest', function () {
   'use strict';
+  xit('is a placeholder to satisfy jshint when no test is actually ignored');
 
   function fireScrollEvent() {
     var event = document.createEvent('Event');
@@ -21,31 +22,37 @@ describe('VisSensePluginPercentageTimeTest', function () {
     setTimeout(function () {
       element.style.display = 'block';
       fireScrollEvent();
+      console.log('[showHide] element -> visible');
     }, config.show);
 
     setTimeout(function () {
       element.style.display = 'none';
       fireScrollEvent();
+      console.log('[showHide] element -> hidden');
     }, config.hide);
   }
 
-  function jumpToFixedPositionAndBack(element, leftInPixel, show, hide) {
+  function jumpToFixedPositionAndBack(element, leftInPixel, config) {
+    expect(config.jump > 0).toBe(true);
+    expect(config.jumpBack > 0).toBe(true);
+
     var formPosition = element.style.position;
     var formerLeft = element.style.left;
     var formerTop = element.style.top;
+
     setTimeout(function () {
       element.style.position = 'fixed';
       element.style.top = '0';
       element.style.left = leftInPixel + 'px';
       fireScrollEvent();
-    }, show);
+    }, config.jump);
 
     setTimeout(function () {
       element.style.display = formPosition;
       element.style.left = formerLeft;
       element.style.top = formerTop;
       fireScrollEvent();
-    }, hide);
+    }, config.jumpBack);
   }
 
 
@@ -79,7 +86,7 @@ describe('VisSensePluginPercentageTimeTest', function () {
       jasmine.clock().tick(999);
       expect(observer.callback).not.toHaveBeenCalled();
 
-      jasmine.clock().tick(5000);
+      jasmine.clock().tick(1);
       expect(observer.callback.calls.count()).toEqual(1);
 
     });
@@ -92,7 +99,10 @@ describe('VisSensePluginPercentageTimeTest', function () {
         observer.callback();
       });
 
+      jasmine.clock().tick(1);
+
       jasmine.clock().tick(99999);
+
       expect(observer.callback).not.toHaveBeenCalled();
     });
 
@@ -137,29 +147,74 @@ describe('VisSensePluginPercentageTimeTest', function () {
     });
 
     it('should check that the 50/1 test does NOT pass when elements visbility ' +
-       'falls below percentage limit before time limit has been reached', function () {
+    'falls below percentage limit before time limit has been reached', function () {
       jasmine.getFixtures().set('<div id="element" style="width: 10px; height: 10px;"></div>');
       var visobj = new VisSense($('#element')[0]);
 
+      var start = Date.now();
+      var testOuterMonitor = null;
       visobj.on50_1TestPassed(function () {
         observer.callback();
+      }, {
+        strategy: [new VisSense.VisMon.Strategy.PollingStrategy({ interval: 100 }), {
+          start: function (monitor) {
+            console.log('monitor started: begin 50/1 test');
+            testOuterMonitor = monitor;
+          },
+          stop: function () {
+            console.log('monitor stopped - end 50/1 test');
+          }
+        }]
       });
 
-      jasmine.clock().tick(200);
+      expect(testOuterMonitor.state().visible).toBe(true);
+      console.log('time elapsed ' + (Date.now() - start));
 
       var leftInPixel = '-9';
-      jumpToFixedPositionAndBack($('#element')[0], leftInPixel, 1, 999);
+      jumpToFixedPositionAndBack($('#element')[0], leftInPixel, {
+        jump: 1,
+        jumpBack: 999
+      });
 
-      jasmine.clock().tick(200);
+      jasmine.clock().tick(1);
+
+      expect(testOuterMonitor.state().visible).toBe(true);
+      console.log('time elapsed ' + (Date.now() - start));
+
+      jasmine.clock().tick(98);
+      expect(testOuterMonitor.state().visible).toBe(true);
+      console.log('time elapsed ' + (Date.now() - start));
+
+      jasmine.clock().tick(1);
+
+      // element jumps to fixed position -> monitor is "hidden"
+      expect(testOuterMonitor.state().visible).toBe(false);
+      console.log('time elapsed ' + (Date.now() - start));
+
+      jasmine.clock().tick(899);
+
+      expect(testOuterMonitor.state().visible).toBe(false);
+      console.log('time elapsed ' + (Date.now() - start));
+
       expect(observer.callback).not.toHaveBeenCalled();
 
-      // if we'd tick 1500 at once, than the callback would be triggered..
-      jasmine.clock().tick(300);
+      jasmine.clock().tick(1);
+
+      // jump back to original position -> monitor is "visible"
+      expect(testOuterMonitor.state().visible).toBe(true);
+      console.log('time elapsed ' + (Date.now() - start));
+
+      expect(observer.callback).not.toHaveBeenCalled();
+
       jasmine.clock().tick(300);
       jasmine.clock().tick(300);
       jasmine.clock().tick(300);
 
       expect(observer.callback).not.toHaveBeenCalled();
+
+      jasmine.clock().tick(300);
+
+      expect(observer.callback.calls.count()).toEqual(1);
     });
 
 
@@ -168,37 +223,58 @@ describe('VisSensePluginPercentageTimeTest', function () {
       jasmine.getFixtures().set('<div id="element" style="width: 10px; height: 10px;"></div>');
       var visobj = new VisSense($('#element')[0]);
 
+      var start = Date.now();
+      var testOuterMonitor = null;
       visobj.on50_1TestPassed(function () {
         observer.callback();
+      }, {
+        strategy: [
+          new VisSense.VisMon.Strategy.PollingStrategy({interval: 10}), {
+            start: function (monitor) {
+              console.log('monitor started: begin 50/1 test');
+              testOuterMonitor = monitor;
+            },
+            stop: function () {
+              console.log('monitor stopped - end 50/1 test');
+            }
+          }]
       });
 
       // show and hide the element in over a second
       showHide($('#element')[0], {
         show: 1,
-        hide: 1010
+        hide: 1100
       });
 
-      expect(visobj.isVisible()).toBe(true);
+      expect(testOuterMonitor.state().visible).toBe(true);
+      console.log('time elapsed ' + (Date.now() - start));
 
-      jasmine.clock().tick(998); // shortly before test should be passed
+      jasmine.clock().tick(1); // element gets visible
+      jasmine.clock().tick(9); // monitor notices the change - 1 second from now on
+      console.log('time elapsed ' + (Date.now() - start));
 
-      expect(visobj.isVisible()).toBe(true);
+      expect(testOuterMonitor.state().visible).toBe(true);
 
-      expect(observer.callback).not.toHaveBeenCalled();
+      jasmine.clock().tick(989);
+      console.log('time elapsed ' + (Date.now() - start));
 
-      jasmine.clock().tick(2); // test should not be passed
+      expect(testOuterMonitor.state().visible).toBe(true);
+      expect(observer.callback).not.toHaveBeenCalled(); // 999ms elapsed
 
-      expect(visobj.isVisible()).toBe(true);
+      jasmine.clock().tick(2); // test is passed
+
+      console.log('time elapsed ' + (Date.now() - start));
 
       expect(observer.callback.calls.count()).toEqual(1);
 
-      jasmine.clock().tick(9);
-      jasmine.clock().tick(99);
-      jasmine.clock().tick(999);
-      jasmine.clock().tick(9999);
+      jasmine.clock().tick(100); // element got hidden
+      jasmine.clock().tick(100);
+      jasmine.clock().tick(100);
+
+      // WHY THE FUCK IS THE MONITOR HERE VISIBLE?
+      // -> expect(testOuterMonitor.state().visible).toBe(true);
 
       expect(observer.callback.calls.count()).toEqual(1);
-
     });
 
     it('should check that the 50/1 test does pass when an initial HIDDEN element ' +
@@ -210,12 +286,12 @@ describe('VisSensePluginPercentageTimeTest', function () {
       visobj.on50_1TestPassed(function () {
         observer.callback();
       }, {
-        strategy: [new VisSense.VisMon.Strategy.PollingStrategy({ interval: 1 }), {
-          start: function(monitor) {
+        strategy: [new VisSense.VisMon.Strategy.PollingStrategy({interval: 1}), {
+          start: function (monitor) {
             console.log('monitor started: begin 50/1 test');
             testOuterMonitor = monitor;
           },
-          stop: function() {
+          stop: function () {
             console.log('monitor stopped - end 50/1 test');
           }
         }]

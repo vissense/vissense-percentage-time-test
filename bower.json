@@ -1,8 +1,8 @@
 {
-  "name": "vissense-plugin-percentage-time-test",
+  "name": "vissense-percentage-time-test",
   "version": "0.3.0",
   "license": "MIT",
-  "main": "dist/vissense.plugin.percentage-time-test.min.js",
+  "main": "dist/vissense-percentage-time-test.min.js",
   "description": "",
   "keywords": [],
   "homepage": "https://example.com",
