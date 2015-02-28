@@ -18,7 +18,9 @@
                 }
                 timeElapsed >= timeLimit && (monitor.stop(), outerMonitor.stop(), callback());
             },
-            stop: function() {}
+            stop: function() {
+                timeStarted = null;
+            }
         });
     };
     VisSense.fn.onPercentageTimeTestPassed = function(callback, config) {
@@ -27,8 +29,8 @@
             timeLimit: 1e3,
             interval: 100,
             strategy: undefined
-        }), innerMonitor = null, outerMonitor = new VisSense(this.element(), {
-            hidden: _config.percentageLimit - .01
+        }), hiddenLimit = Math.max(_config.percentageLimit - .01, 0), innerMonitor = null, outerMonitor = new VisSense(this.element(), {
+            hidden: hiddenLimit
         }).monitor({
             strategy: _config.strategy,
             visible: function(monitor) {
@@ -43,7 +45,7 @@
             }
         });
         return outerMonitor.start(), function() {
-            outerMonitor.stop();
+            outerMonitor.stop(), innerMonitor = null;
         };
     }, VisSense.fn.on50_1TestPassed = function(callback, config) {
         return this.onPercentageTimeTestPassed(callback, VisSenseUtils.extend(config || {}, {
