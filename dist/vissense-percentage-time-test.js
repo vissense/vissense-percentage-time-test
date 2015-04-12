@@ -22,14 +22,13 @@
                 timeStarted = null;
             }
         });
-    };
-    VisSense.fn.onPercentageTimeTestPassed = function(callback, config) {
+    }, onPercentageTimeTestPassed = function(element, callback, config) {
         var _config = VisSenseUtils.defaults(config, {
             percentageLimit: 1,
             timeLimit: 1e3,
             interval: 100,
             strategy: undefined
-        }), hiddenLimit = Math.max(_config.percentageLimit - .01, 0), innerMonitor = null, outerMonitor = new VisSense(this.element(), {
+        }), hiddenLimit = Math.max(_config.percentageLimit - .01, 0), innerMonitor = null, outerMonitor = new VisSense(element, {
             hidden: hiddenLimit
         }).monitor({
             strategy: _config.strategy,
@@ -47,11 +46,16 @@
         return outerMonitor.start(), function() {
             outerMonitor.stop(), innerMonitor = null;
         };
-    }, VisSense.fn.on50_1TestPassed = function(callback, config) {
-        return this.onPercentageTimeTestPassed(callback, VisSenseUtils.extend(config || {}, {
+    }, on50_1TestPassed = function(element, callback, config) {
+        return onPercentageTimeTestPassed(element, callback, VisSenseUtils.extend(config || {}, {
             percentageLimit: .5,
             timeLimit: 1e3,
             interval: 100
         }));
+    };
+    VisSense.fn.onPercentageTimeTestPassed = function(callback, config) {
+        onPercentageTimeTestPassed(this.element(), callback, config);
+    }, VisSense.fn.on50_1TestPassed = function(callback, config) {
+        on50_1TestPassed(this.element(), callback, config);
     };
 });
