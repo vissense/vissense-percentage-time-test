@@ -6,68 +6,59 @@
     "use strict";
     var createInnerMonitor = function(outerMonitor, callback, config) {
         var timeElapsed = 0, timeStarted = null, timeLimit = config.timeLimit, percentageLimit = config.percentageLimit, interval = config.interval;
-        return outerMonitor.visobj().monitor({
-            strategy: new VisSense.VisMon.Strategy.PollingStrategy({
-                interval: interval
-            }),
-            update: function(monitor) {
-                var percentage = monitor.state().percentage;
-                if (percentageLimit > percentage) timeStarted = null; else {
-                    var now = VisSenseUtils.now();
-                    timeStarted = timeStarted || now, timeElapsed = now - timeStarted;
-                }
-                timeElapsed >= timeLimit && (monitor.stop(), outerMonitor.stop(), callback());
-            },
-            stop: function() {
-                timeStarted = null;
+        return VisSense.VisMon.Builder(outerMonitor.visobj()).strategy(new VisSense.VisMon.Strategy.PollingStrategy({
+            interval: interval
+        })).on("update", function(monitor) {
+            var percentage = monitor.state().percentage;
+            if (percentageLimit > percentage) timeStarted = null; else {
+                var now = VisSenseUtils.now();
+                timeStarted = timeStarted || now, timeElapsed = now - timeStarted;
             }
-        });
+            timeElapsed >= timeLimit && (monitor.stop(), outerMonitor.stop(), callback(monitor));
+        }).on("stop", function() {
+            timeStarted = null;
+        }).build();
     }, onPercentageTimeTestPassed = function(element, callback, config) {
         var _config = VisSenseUtils.defaults(config, {
             percentageLimit: 1,
             timeLimit: 1e3,
             interval: 100,
             strategy: undefined
-        }), hiddenLimit = Math.max(_config.percentageLimit - .01, 0), innerMonitor = null, outerMonitor = new VisSense(element, {
+        }), hiddenLimit = Math.max(_config.percentageLimit - .001, 0), innerMonitor = null, outerMonitor = VisSense.VisMon.Builder(new VisSense(element, {
             hidden: hiddenLimit
-        }).monitor({
-            strategy: _config.strategy,
-            visible: function(monitor) {
-                null === innerMonitor && (innerMonitor = createInnerMonitor(monitor, callback, _config)), 
-                innerMonitor.start();
-            },
-            hidden: function() {
-                null !== innerMonitor && innerMonitor.stop();
-            },
-            stop: function() {
-                null !== innerMonitor && innerMonitor.stop();
-            }
-        });
+        })).set("strategy", _config.strategy).on("visible", function(monitor) {
+            null === innerMonitor && (innerMonitor = createInnerMonitor(monitor, callback, _config)), 
+            innerMonitor.start();
+        }).on("hidden", function() {
+            null !== innerMonitor && innerMonitor.stop();
+        }).on("stop", function() {
+            null !== innerMonitor && innerMonitor.stop();
+        }).build();
         return outerMonitor.start(), function() {
             outerMonitor.stop(), innerMonitor = null;
         };
-    }, on50_1TestPassed = function(element, callback, config) {
-        return onPercentageTimeTestPassed(element, callback, VisSenseUtils.extend(config || {}, {
-            percentageLimit: .5,
-            timeLimit: 1e3,
-            interval: 100
-        }));
     };
     VisSense.fn.onPercentageTimeTestPassed = function(callback, config) {
         onPercentageTimeTestPassed(this.element(), callback, config);
-    }, VisSense.fn.on50_1TestPassed = function(callback, config) {
-        on50_1TestPassed(this.element(), callback, config);
-    }, VisSense.VisMon.Strategy.PercentageTimeTestEventStrategy = function(options) {
+    }, VisSense.fn.on50_1TestPassed = function(callback, options) {
+        var config = VisSenseUtils.extend(VisSenseUtils.defaults(options, {
+            interval: 100
+        }), {
+            percentageLimit: .5,
+            timeLimit: 1e3
+        }), outerMonitor = VisSense.VisMon.Builder(this).set("strategy", config.strategy).strategy(new VisSense.VisMon.Strategy.PercentageTimeTestEventStrategy("ptt-50/1-passed", config)).on("ptt-50/1-passed", function(monitor, data) {
+            callback(monitor, data), outerMonitor.stop();
+        }).build();
+        outerMonitor.start();
+    }, VisSense.VisMon.Strategy.PercentageTimeTestEventStrategy = function(eventName, options) {
         var registerPercentageTimeTestHook = function(monitor, percentageTimeTestConfig) {
-            var config = VisSenseUtils.defaults(percentageTimeTestConfig, {
-                eventName: "percentage-time-test-passed"
-            }), cancelTest = VisSenseUtils.noop, unregisterVisibleHook = monitor.on("visible", VisSenseUtils.once(function(monitor) {
-                cancelTest = onPercentageTimeTestPassed(monitor.visobj().element(), function() {
+            var cancelTest = VisSenseUtils.noop, unregisterVisibleHook = monitor.on("visible", VisSenseUtils.once(function(monitor) {
+                cancelTest = onPercentageTimeTestPassed(monitor.visobj().element(), function(innerMonitor) {
                     var report = {
-                        monitorState: monitor.state(),
-                        testConfig: config
+                        monitorState: innerMonitor.state(),
+                        testConfig: percentageTimeTestConfig
                     };
-                    monitor.publish(config.eventName, [ monitor, report ]);
+                    monitor.update(), monitor.publish(eventName, [ monitor, report ]);
                 }, percentageTimeTestConfig), unregisterVisibleHook();
             }));
             return function() {

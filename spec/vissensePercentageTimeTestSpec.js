@@ -146,7 +146,7 @@ describe('VisSensePluginPercentageTimeTest', function () {
       expect(observer.callback).not.toHaveBeenCalled();
     });
 
-    it('should check that the 50/1 test does NOT pass when elements visbility ' +
+    it('should check that the 50/1 test does NOT pass when elements visibility ' +
     'falls below percentage limit before time limit has been reached', function () {
       jasmine.getFixtures().set('<div id="element" style="width: 10px; height: 10px;"></div>');
       var visobj = new VisSense($('#element')[0]);
@@ -156,15 +156,16 @@ describe('VisSensePluginPercentageTimeTest', function () {
       visobj.on50_1TestPassed(function () {
         observer.callback();
       }, {
-        strategy: [new VisSense.VisMon.Strategy.PollingStrategy({ interval: 100 }), {
-          start: function (monitor) {
-            console.log('monitor started: begin 50/1 test');
-            testOuterMonitor = monitor;
-          },
-          stop: function () {
-            console.log('monitor stopped - end 50/1 test');
-          }
-        }]
+        strategy: [
+          new VisSense.VisMon.Strategy.PollingStrategy({interval: 100}), {
+            start: function (monitor) {
+              console.log('monitor started: begin 50/1 test');
+              testOuterMonitor = monitor;
+            },
+            stop: function () {
+              console.log('monitor stopped - end 50/1 test');
+            }
+          }]
       });
 
       expect(testOuterMonitor.state().visible).toBe(true);
@@ -286,15 +287,16 @@ describe('VisSensePluginPercentageTimeTest', function () {
       visobj.on50_1TestPassed(function () {
         observer.callback();
       }, {
-        strategy: [new VisSense.VisMon.Strategy.PollingStrategy({interval: 1}), {
-          start: function (monitor) {
-            console.log('monitor started: begin 50/1 test');
-            testOuterMonitor = monitor;
-          },
-          stop: function () {
-            console.log('monitor stopped - end 50/1 test');
-          }
-        }]
+        strategy: [
+          new VisSense.VisMon.Strategy.PollingStrategy({interval: 1}), {
+            start: function (monitor) {
+              console.log('monitor started: begin 50/1 test');
+              testOuterMonitor = monitor;
+            },
+            stop: function () {
+              console.log('monitor stopped - end 50/1 test');
+            }
+          }]
       });
 
       // show and hide the element in over a second
