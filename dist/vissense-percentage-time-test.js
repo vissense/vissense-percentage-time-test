@@ -46,10 +46,8 @@
         }), {
             percentageLimit: .5,
             timeLimit: 1e3
-        }), outerMonitor = VisSense.VisMon.Builder(this).set("strategy", config.strategy).strategy(new VisSense.VisMon.Strategy.PercentageTimeTestEventStrategy("ptt-50/1-passed", config)).on("ptt-50/1-passed", function(monitor, data) {
-            callback(monitor, data), outerMonitor.stop();
-        }).build();
-        outerMonitor.start();
+        });
+        onPercentageTimeTestPassed(this.element(), callback, config);
     }, VisSense.VisMon.Strategy.PercentageTimeTestEventStrategy = function(eventName, options) {
         var registerPercentageTimeTestHook = function(monitor, percentageTimeTestConfig) {
             var cancelTest = VisSenseUtils.noop, unregisterVisibleHook = monitor.on("visible", VisSenseUtils.once(function(monitor) {

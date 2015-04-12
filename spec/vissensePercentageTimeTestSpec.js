@@ -36,7 +36,7 @@ describe('VisSensePluginPercentageTimeTest', function () {
     expect(config.jump > 0).toBe(true);
     expect(config.jumpBack > 0).toBe(true);
 
-    var formPosition = element.style.position;
+    var formerPosition = element.style.position;
     var formerLeft = element.style.left;
     var formerTop = element.style.top;
 
@@ -44,13 +44,15 @@ describe('VisSensePluginPercentageTimeTest', function () {
       element.style.position = 'fixed';
       element.style.top = '0';
       element.style.left = leftInPixel + 'px';
+      console.log('[jumpToFixedPositionAndBack] jumped to fixed position -> hidden');
       fireScrollEvent();
     }, config.jump);
 
     setTimeout(function () {
-      element.style.display = formPosition;
+      element.style.display = formerPosition;
       element.style.left = formerLeft;
       element.style.top = formerTop;
+      console.log('[jumpToFixedPositionAndBack] jumped back to normal position -> visible');
       fireScrollEvent();
     }, config.jumpBack);
   }
@@ -323,6 +325,79 @@ describe('VisSensePluginPercentageTimeTest', function () {
       expect(observer.callback.calls.count()).toEqual(1);
 
       console.log('time elapsed ' + (Date.now() - start));
+
+    });
+
+    it('WITH STRATEGY: should check that the 50/1 test does NOT pass when elements visibility ' +
+    'falls below percentage limit before time limit has been reached', function () {
+      jasmine.getFixtures().set('<div id="element" style="width: 10px; height: 10px;"></div>');
+
+      var start = Date.now();
+
+      var testOuterMonitor = VisSense.VisMon.Builder(new VisSense($('#element')[0], {
+        hidden: 0.499
+      }))
+        .strategy(new VisSense.VisMon.Strategy.PollingStrategy({interval: 100}))
+        .strategy({
+          start: function () {
+            console.log('monitor started: begin 50/1 test');
+          },
+          stop: function () {
+            console.log('monitor stopped - end 50/1 test');
+          }
+        })
+        .strategy(new VisSense.VisMon.Strategy.PercentageTimeTestEventStrategy('ptt-50/1-passed', {
+          interval: 100,
+          percentageLimit: 0.5,
+          timeLimit: 1000
+        }))
+        .on('ptt-50/1-passed', function (monitor, data) {
+          observer.callback(data);
+          testOuterMonitor.stop();
+        })
+        .build();
+
+      testOuterMonitor.start();
+
+      var leftInPixel = '-9';
+      jumpToFixedPositionAndBack($('#element')[0], leftInPixel, {
+        jump: 1,
+        jumpBack: 999
+      });
+
+      expect(testOuterMonitor.state().visible).toBe(true);
+      console.log('time elapsed ' + (Date.now() - start));
+
+      jasmine.clock().tick(100);
+
+      // element jumps to fixed position -> monitor is "hidden"
+      expect(testOuterMonitor.state().visible).toBe(false);
+      console.log('time elapsed ' + (Date.now() - start));
+
+      jasmine.clock().tick(899);
+
+      expect(testOuterMonitor.state().visible).toBe(false);
+      console.log('time elapsed ' + (Date.now() - start));
+
+      expect(observer.callback).not.toHaveBeenCalled();
+
+      jasmine.clock().tick(1);
+
+      // jump back to original position -> monitor is "visible"
+      expect(testOuterMonitor.state().visible).toBe(true);
+      console.log('time elapsed ' + (Date.now() - start));
+
+      expect(observer.callback).not.toHaveBeenCalled();
+
+      jasmine.clock().tick(300);
+      jasmine.clock().tick(300);
+      jasmine.clock().tick(300);
+
+      expect(observer.callback).not.toHaveBeenCalled();
+
+      jasmine.clock().tick(300);
+
+      expect(observer.callback.calls.count()).toEqual(1);
 
     });
 
