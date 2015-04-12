@@ -57,5 +57,30 @@
         onPercentageTimeTestPassed(this.element(), callback, config);
     }, VisSense.fn.on50_1TestPassed = function(callback, config) {
         on50_1TestPassed(this.element(), callback, config);
+    }, VisSense.VisMon.Strategy.PercentageTimeTestEventStrategy = function(options) {
+        var registerPercentageTimeTestHook = function(monitor, percentageTimeTestConfig) {
+            var config = VisSenseUtils.defaults(percentageTimeTestConfig, {
+                eventName: "percentage-time-test-passed"
+            }), cancelTest = VisSenseUtils.noop, unregisterVisibleHook = monitor.on("visible", VisSenseUtils.once(function(monitor) {
+                cancelTest = onPercentageTimeTestPassed(monitor.visobj().element(), function() {
+                    var report = {
+                        monitorState: monitor.state(),
+                        testConfig: config
+                    };
+                    monitor.publish(config.eventName, [ monitor, report ]);
+                }, percentageTimeTestConfig), unregisterVisibleHook();
+            }));
+            return function() {
+                unregisterVisibleHook(), cancelTest();
+            };
+        }, cancel = VisSenseUtils.noop;
+        return {
+            init: function(monitor) {
+                cancel = registerPercentageTimeTestHook(monitor, options);
+            },
+            stop: function() {
+                cancel();
+            }
+        };
     };
 });
