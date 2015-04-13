@@ -1,11 +1,11 @@
 {
   "name": "vissense-percentage-time-test",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "license": "MIT",
   "main": "dist/vissense-percentage-time-test.min.js",
   "description": "",
   "keywords": [],
-  "homepage": "https://example.com",
+  "homepage": "https://github.com/vissense/vissense-percentage-time-test",
   "authors": [
     "tbk"
   ],
@@ -27,13 +27,13 @@
     "dist/coverage",
     "**/.*"
   ],
+  "dependencies": {
+    "vissense": "0.7.0"
+  },
   "devDependencies": {
     "jasmine": "2.1.3",
     "lodash": "2.4.1",
     "jquery": "2.1.1",
     "jasmine-jquery": "velesin/jasmine-jquery#2.0.6"
-  },
-  "dependencies": {
-    "vissense": "vissense/vissense#master"
   }
 }
