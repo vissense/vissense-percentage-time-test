@@ -18,14 +18,15 @@
         }).on("stop", function() {
             timeStarted = null;
         }).build();
-    }, onPercentageTimeTestPassed = function(element, callback, config) {
+    }, onPercentageTimeTestPassed = function(visobj, callback, config) {
         var _config = VisSenseUtils.defaults(config, {
             percentageLimit: 1,
             timeLimit: 1e3,
             interval: 100,
             strategy: undefined
-        }), hiddenLimit = Math.max(_config.percentageLimit - .001, 0), innerMonitor = null, outerMonitor = VisSense.VisMon.Builder(new VisSense(element, {
-            hidden: hiddenLimit
+        }), hiddenLimit = Math.max(_config.percentageLimit - .001, 0), innerMonitor = null, outerMonitor = VisSense.VisMon.Builder(new VisSense(visobj.element(), {
+            hidden: hiddenLimit,
+            referenceWindow: visobj.referenceWindow()
         })).set("strategy", _config.strategy).on("visible", function(monitor) {
             null === innerMonitor && (innerMonitor = createInnerMonitor(monitor, callback, _config)), 
             innerMonitor.start();
@@ -39,7 +40,7 @@
         };
     };
     VisSense.fn.onPercentageTimeTestPassed = function(callback, config) {
-        onPercentageTimeTestPassed(this.element(), callback, config);
+        onPercentageTimeTestPassed(this, callback, config);
     }, VisSense.fn.on50_1TestPassed = function(callback, options) {
         var config = VisSenseUtils.extend(VisSenseUtils.defaults(options, {
             interval: 100
@@ -47,11 +48,11 @@
             percentageLimit: .5,
             timeLimit: 1e3
         });
-        onPercentageTimeTestPassed(this.element(), callback, config);
+        onPercentageTimeTestPassed(this, callback, config);
     }, VisSense.VisMon.Strategy.PercentageTimeTestEventStrategy = function(eventName, options) {
         var registerPercentageTimeTestHook = function(monitor, percentageTimeTestConfig) {
             var cancelTest = VisSenseUtils.noop, unregisterVisibleHook = monitor.on("visible", VisSenseUtils.once(function(monitor) {
-                cancelTest = onPercentageTimeTestPassed(monitor.visobj().element(), function(innerMonitor) {
+                cancelTest = onPercentageTimeTestPassed(monitor.visobj(), function(innerMonitor) {
                     var report = {
                         monitorState: innerMonitor.state(),
                         testConfig: percentageTimeTestConfig
