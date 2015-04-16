@@ -1,4 +1,4 @@
-/*! { "name": "vissense-percentage-time-test", "version": "0.4.0", "copyright": "(c) 2015 tbk" } */
+/*! { "name": "vissense-percentage-time-test", "version": "0.5.0", "copyright": "(c) 2015 tbk" } */
 !function(root, factory) {
     "use strict";
     factory(root, root.VisSense, root.VisSense.Utils);
