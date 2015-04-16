@@ -28,7 +28,7 @@
     "**/.*"
   ],
   "dependencies": {
-    "vissense": "0.7.0"
+    "vissense": "0.8.0"
   },
   "devDependencies": {
     "jasmine": "2.1.3",
